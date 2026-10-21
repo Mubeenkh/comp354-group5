@@ -90,6 +90,47 @@ function renderMenu() {
     }
 }
 
+// ~~~~~ PBI 4/5 (Customer cart add/remove functionality)
+function getCart() {
+    return JSON.parse(localStorage.getItem('quickbite_cart')) || [];
+}
+
+function saveCart(cart) {
+    localStorage.setItem('quickbite_cart', JSON.stringify(cart));
+    updateCartBadges();
+}
+
+function addToCart(restaurantId, foodId) {
+    const cart = getCart();
+    const restaurant = restaurantsData[restaurantId];
+    const foodItem = restaurant.menu.find(item => item.id === foodId);
+
+    const existingItem = cart.find(item => item.foodId === foodId);
+
+    if (existingItem) {
+        existingItem.qty += 1;
+    } else {
+        cart.push({
+            restaurantId: restaurantId,
+            restaurantName: restaurant.name,
+            foodId: foodId,
+            name: foodItem.name,
+            price: foodItem.price,
+            qty: 1
+        });
+    }
+    saveCart(cart);
+    alert(`${foodItem.name} added to cart!`);
+}
+
+function updateCartBadges() {
+    const cart = getCart();
+    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    document.querySelectorAll('.cart-btn').forEach(btn => {
+        btn.textContent = `Cart (${totalItems})`;
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('restaurant-list')) renderRestaurants();
     if (document.getElementById('menu-list')) renderMenu();
