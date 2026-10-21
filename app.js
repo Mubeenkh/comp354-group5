@@ -123,6 +123,16 @@ function addToCart(restaurantId, foodId) {
     alert(`${foodItem.name} added to cart!`);
 }
 
+function removeFromCart(foodId) {
+    let cart = getCart();
+    cart = cart.filter(item => item.foodId !== foodId);
+    saveCart(cart);
+    // if on checkout page then re-render
+    if (window.location.pathname.includes('checkout.html')) {
+        renderCheckout();
+    }
+}
+
 function updateCartBadges() {
     const cart = getCart();
     const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
@@ -154,6 +164,7 @@ function renderCheckout() {
                     <div class="order-item-name">${item.name}</div>
                     <div class="order-item-details">Qty ${item.qty} &middot; $${(item.price * item.qty).toFixed(2)}</div>
                 </div>
+                <button class="remove-btn" onclick="removeFromCart('${item.foodId}')">Remove</button>
             </div>
         `;
     }).join('');
