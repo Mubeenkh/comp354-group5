@@ -131,7 +131,43 @@ function updateCartBadges() {
     });
 }
 
+// PBI 4/5 customer checkout page with cart
+function renderCheckout() {
+    const cart = getCart();
+    const orderList = document.getElementById('order-list');
+    const totalPriceEl = document.getElementById('total-price');
+
+    if (cart.length === 0) {
+        orderList.innerHTML = `<p class="empty-cart-msg">Your cart is empty.</p>`;
+        totalPriceEl.textContent = "$0.00";
+        return;
+    }
+
+    document.getElementById('checkout-resto-name').textContent = `From ${cart[0].restaurantName}`;
+
+    let total = 0;
+    orderList.innerHTML = cart.map(item => {
+        total += (item.price * item.qty);
+        return `
+            <div class="order-item">
+                <div class="order-item-info">
+                    <div class="order-item-name">${item.name}</div>
+                    <div class="order-item-details">Qty ${item.qty} &middot; $${(item.price * item.qty).toFixed(2)}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    totalPriceEl.textContent = `$${total.toFixed(2)}`;
+
+    // Back button goes to last viewed restaurant
+    document.getElementById('back-to-menu').href = `menu.html?id=${cart[0].restaurantId}`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    updateCartBadges();
+
     if (document.getElementById('restaurant-list')) renderRestaurants();
     if (document.getElementById('menu-list')) renderMenu();
+    if (document.getElementById('order-list')) renderCheckout();
 });
