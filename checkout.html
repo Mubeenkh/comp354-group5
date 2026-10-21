@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Order</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="checkout-container">
+        <div class="top-nav">
+          <a href="index.html" class="back-link" id="back-to-menu">
+            <span>&larr;</span> Back to menu
+          </a>
+        </div>
+
+        <div class="checkout-content">
+          <div class="order-header">
+            <h1>Your order</h1>
+            <p class="order-subtitle" id="checkout-resto-name">From ...</p>
+          </div>
+
+          <!-- javascript dynamic order items based on items added to cart -->
+          <div class="order-list" id="order-list"></div>
+        </div>
+
+        <div class="checkout-footer">
+          <div class="total-row">
+            <span class="total-label">Total</span>
+            <span class="total-price" id="total-price">$0.00</span>
+          </div>
+          <button
+            class="checkout-btn"
+            onclick="alert('Proceeding to payment...')"
+          >
+            Continue to checkout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
