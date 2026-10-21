@@ -57,6 +57,40 @@ function renderRestaurants() {
     }).join('');
 }
 
+// PBI 3 Restaurants Menu page
+function renderMenu() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const restoId = urlParams.get('id') || "1"; // Default to 1 if no ID
+    const resto = restaurantsData[restoId];
+
+    if (!resto) return;
+
+    // Update Headers
+    document.getElementById('menu-resto-name').textContent = resto.name;
+    document.getElementById('menu-resto-desc').textContent = resto.desc;
+
+    // Update Back Button to go back to list
+    document.getElementById('back-to-list').href = "index.html";
+
+    // Render Menu Items
+    const menuList = document.getElementById('menu-list');
+    if (resto.menu && resto.menu.length > 0) {
+        menuList.innerHTML = resto.menu.map(item => `
+            <div class="menu-item">
+                <div class="menu-item-info">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-desc">${item.desc}</div>
+                    <div class="item-price">$${item.price.toFixed(2)}</div>
+                </div>
+                <button class="add-btn" onclick="addToCart('${restoId}', '${item.id}')">Add</button>
+            </div>
+        `).join('');
+    } else {
+        menuList.innerHTML = `<p class="subtitle">No items available.</p>`;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('restaurant-list')) renderRestaurants();
+    if (document.getElementById('menu-list')) renderMenu();
 });
