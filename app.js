@@ -37,5 +37,26 @@ const restaurantsData = {
         ]
     }
 };
+
+// PBI 2 Restaurants List page
+function renderRestaurants() {
+    const listEl = document.getElementById('restaurant-list');
+    if (!listEl) return;
+
+    listEl.innerHTML = Object.keys(restaurantsData).map(id => {
+        const resto = restaurantsData[id];
+        return `
+            <a href="menu.html?id=${id}" class="restaurant-item">
+                <div class="image-placeholder"></div>
+                <div class="restaurant-info">
+                    <div class="restaurant-name">${resto.name}</div>
+                    <div class="restaurant-desc">${resto.desc}</div>
+                </div>
+            </a>
+        `;
+    }).join('');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('restaurant-list')) renderRestaurants();
 });
