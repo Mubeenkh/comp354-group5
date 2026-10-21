@@ -90,7 +90,84 @@ function renderMenu() {
     }
 }
 
+// ~~~~~ PBI 4/5 (Customer cart add/remove functionality)
+function getCart() {
+    return JSON.parse(localStorage.getItem('quickbite_cart')) || [];
+}
+
+function saveCart(cart) {
+    localStorage.setItem('quickbite_cart', JSON.stringify(cart));
+    updateCartBadges();
+}
+
+function addToCart(restaurantId, foodId) {
+    const cart = getCart();
+    const restaurant = restaurantsData[restaurantId];
+    const foodItem = restaurant.menu.find(item => item.id === foodId);
+
+    const existingItem = cart.find(item => item.foodId === foodId);
+
+    if (existingItem) {
+        existingItem.qty += 1;
+    } else {
+        cart.push({
+            restaurantId: restaurantId,
+            restaurantName: restaurant.name,
+            foodId: foodId,
+            name: foodItem.name,
+            price: foodItem.price,
+            qty: 1
+        });
+    }
+    saveCart(cart);
+    alert(`${foodItem.name} added to cart!`);
+}
+
+function updateCartBadges() {
+    const cart = getCart();
+    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    document.querySelectorAll('.cart-btn').forEach(btn => {
+        btn.textContent = `Cart (${totalItems})`;
+    });
+}
+
+// PBI 4/5 customer checkout page with cart
+function renderCheckout() {
+    const cart = getCart();
+    const orderList = document.getElementById('order-list');
+    const totalPriceEl = document.getElementById('total-price');
+
+    if (cart.length === 0) {
+        orderList.innerHTML = `<p class="empty-cart-msg">Your cart is empty.</p>`;
+        totalPriceEl.textContent = "$0.00";
+        return;
+    }
+
+    document.getElementById('checkout-resto-name').textContent = `From ${cart[0].restaurantName}`;
+
+    let total = 0;
+    orderList.innerHTML = cart.map(item => {
+        total += (item.price * item.qty);
+        return `
+            <div class="order-item">
+                <div class="order-item-info">
+                    <div class="order-item-name">${item.name}</div>
+                    <div class="order-item-details">Qty ${item.qty} &middot; $${(item.price * item.qty).toFixed(2)}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    totalPriceEl.textContent = `$${total.toFixed(2)}`;
+
+    // Back button goes to last viewed restaurant
+    document.getElementById('back-to-menu').href = `menu.html?id=${cart[0].restaurantId}`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    updateCartBadges();
+
     if (document.getElementById('restaurant-list')) renderRestaurants();
     if (document.getElementById('menu-list')) renderMenu();
+    if (document.getElementById('order-list')) renderCheckout();
 });
